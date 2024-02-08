@@ -1,0 +1,37 @@
+type User {
+  id: ID!
+  name: String!
+  email: String!
+}
+
+type Todo {
+  TodoID: ID!
+  UserID: ID!
+  title: String!
+  completed: Boolean!
+}
+
+input CreateTodoInput {
+  UserID: ID!
+  title: String!
+}
+
+input UpdateTodoInput {
+  UserID: ID!
+  title: String
+}
+
+input DeleteTodoInput {
+  UserID: ID!
+  title: String!
+}
+
+type Mutation {
+  createTodo(input: CreateTodoInput!): Todo
+  updateTodo(input: UpdateTodoInput!): Boolean
+  deleteTodo(input: DeleteTodoInput!): Boolean
+}
+
+type Query {
+  listTodos(UserID: ID!): [Todo]
+}
