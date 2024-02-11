@@ -7,13 +7,18 @@ import { Construct } from "constructs";
 import path = require("path");
 interface computeStackProps extends cdk.StackProps {
   usersTable: Table;
+  todosTable: Table;
 }
 
 export class ComputeStack extends cdk.Stack {
   public readonly addUserToTableFunc: NodejsFunction;
+  // Appsync Resolvers Appsync Rsolvers
+  public readonly createTodoFunc: NodejsFunction;
+
   constructor(scope: Construct, id: string, props: computeStackProps) {
     super(scope, id, props);
     this.addUserToTableFunc = this.addUserToUsersTable(props);
+    this.createTodoFunc = this.createTodoFunction(props);
   }
 
   addUserToUsersTable(props: computeStackProps) {
@@ -30,6 +35,22 @@ export class ComputeStack extends cdk.Stack {
       new iam.PolicyStatement({
         actions: ["dynamodb:PutItem"],
         resources: [props.usersTable.tableArn as string],
+      })
+    );
+    return func;
+  }
+
+  createTodoFunction(props: computeStackProps) {
+    const func = new NodejsFunction(this, "createTodoFunc", {
+      functionName: "createTodoFunc",
+      runtime: Runtime.NODEJS_20_X,
+      handler: "handler",
+      entry: path.join(__dirname, "../AppsyncFunctions/createTodo/index.ts"),
+    });
+    func.addToRolePolicy(
+      new iam.PolicyStatement({
+        actions: ["dynamodb:PutItem"],
+        resources: [props.todosTable.tableArn as string],
       })
     );
     return func;
