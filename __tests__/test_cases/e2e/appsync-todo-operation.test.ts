@@ -35,4 +35,23 @@ describe("Graphql/Appsync Todo operation", () => {
     const todos = await when.user_calls_listTodos(user);
     expect(todos.length).toEqual(2);
   });
+  it("User can list his/her todo", async () => {
+    const title = chance.sentence({ words: 5 });
+    const todoData = {
+      UserID: user.username,
+      title: title,
+    };
+    const createTodoResponse = await when.user_creates_a_todo(user, todoData); // no of todos == 3
+    const todoId = createTodoResponse.TodoID;
+    console.log("TODO ID -->", todoId);
+
+    const deleteTodoResponse = await when.user_calls_deleteTodo(
+      user,
+      todoData.title
+    );
+    console.log("Delete Response", deleteTodoResponse);
+
+    const todos = await when.user_calls_listTodos(user);
+    expect(todos.length).toEqual(2);
+  });
 });

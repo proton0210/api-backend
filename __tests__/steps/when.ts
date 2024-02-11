@@ -103,3 +103,38 @@ export const user_calls_listTodos = async (user: any): Promise<any> => {
   console.log("Result", result);
   return result.listTodos;
 };
+
+export const user_calls_deleteTodo = async (
+  user: any,
+  title: string
+): Promise<boolean> => {
+  const deleteTodoMutation = `
+  mutation DeleteTodo($input: DeleteTodoInput!) {
+    deleteTodo(input: $input)
+  }
+`;
+  const variables = {
+    input: {
+      UserID: user.username,
+      title: title,
+    },
+  };
+
+  let result: any;
+  try {
+    result = await makeGraphQLRequest(
+      deleteTodoMutation,
+      variables,
+      user.accessToken
+    );
+  } catch (err: unknown) {
+    if (err instanceof Error) throw err.message;
+    throw new Error("Error at the time of making graphql request");
+  }
+
+  console.log(`[${user.username}] - Deleted a todo`);
+
+  console.log("result ", result);
+
+  return result.deleteTodo;
+};
