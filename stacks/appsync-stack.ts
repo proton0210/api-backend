@@ -8,6 +8,7 @@ import * as path from "path";
 interface AppsyncStackProps extends cdk.StackProps {
   userPool: UserPool;
   createTodoFunc: NodejsFunction;
+  listTodoFunc: NodejsFunction;
 }
 
 export class AppsyncStack extends cdk.Stack {
@@ -16,6 +17,7 @@ export class AppsyncStack extends cdk.Stack {
     super(scope, id, props);
     this.api = this.createAppsyncApi(props);
     this.createTodoResolver(scope, props, this.api);
+    this.listTodoResolver(scope, props, this.api);
   }
   createAppsyncApi(props: AppsyncStackProps) {
     const api = new awsAppsync.GraphqlApi(this, "TodoAppyncApI", {
@@ -55,6 +57,19 @@ export class AppsyncStack extends cdk.Stack {
       .createResolver("CreateTodoMutation", {
         typeName: "Mutation",
         fieldName: "createTodo",
+      });
+  }
+
+  listTodoResolver(
+    scope: Construct,
+    props: AppsyncStackProps,
+    api: awsAppsync.IGraphqlApi
+  ) {
+    const createTodoResolver = api
+      .addLambdaDataSource("ListTodoDatasource", props.listTodoFunc)
+      .createResolver("ListTodoMutation", {
+        typeName: "Query",
+        fieldName: "listTodos",
       });
   }
 }

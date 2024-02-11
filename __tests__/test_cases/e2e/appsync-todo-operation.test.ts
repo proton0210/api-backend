@@ -23,4 +23,16 @@ describe("Graphql/Appsync Todo operation", () => {
     expect(ddbUser.UserID).toMatch(todoData.UserID);
     expect(ddbUser.title).toMatch(todoData.title);
   });
+  it("User can list his/her todo", async () => {
+    const title = chance.sentence({ words: 5 });
+    const todoData = {
+      UserID: user.username,
+      title: title,
+    };
+    const createTodoResponse = await when.user_creates_a_todo(user, todoData);
+    const todoId = createTodoResponse.TodoID;
+    console.log("TODO ID -->", todoId);
+    const todos = await when.user_calls_listTodos(user);
+    expect(todos.length).toEqual(2);
+  });
 });

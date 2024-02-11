@@ -73,3 +73,33 @@ export const user_creates_a_todo = async (
   console.log(`[ ${user.username}] - Created a TODO`);
   return result.createTodo as CreateTodoResponse;
 };
+
+export const user_calls_listTodos = async (user: any): Promise<any> => {
+  const listTodosQuery = `
+  query ListTodos($UserID: ID!) {
+    listTodos(UserID: $UserID) {
+      UserID
+      TodoID
+      title
+      completed
+    }
+  }
+`;
+  const variables = {
+    UserID: user.username,
+  };
+
+  let result: any;
+  try {
+    result = await makeGraphQLRequest(
+      listTodosQuery,
+      variables,
+      user.accessToken
+    );
+  } catch (err: unknown) {
+    if (err instanceof Error) throw err.message;
+    throw new Error("Error at the time of making graphql request");
+  }
+  console.log("Result", result);
+  return result.listTodos;
+};
