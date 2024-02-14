@@ -11,7 +11,9 @@
     "cdk": "cdk",
     "deploy": "cdk synth && cdk deploy --all",
     "signup": "jest --verbose ./__tests__/test_cases/e2e/confirm-user-sign-up.test.ts",
-    "graphql": "jest --verbose ./__tests__/test_cases/e2e/appsync-todo-operation.test.ts"
+    "graphql": "jest --verbose ./__tests__/test_cases/e2e/appsync-todo-operation.test.ts",
+    "gateway": "jest --verbose ./__tests__/test_cases/e2e/apigateway-test-operation.test.ts",
+    "all_tests": "jest --verbose ./__tests__/test_cases/e2e/"
   },
   "devDependencies": {
     "@types/jest": "^29.5.11",
@@ -30,6 +32,7 @@
     "@types/aws-lambda": "^8.10.133",
     "@types/chance": "^1.1.6",
     "aws-cdk-lib": "2.126.0",
+    "axios": "^1.6.7",
     "chance": "^1.1.11",
     "constructs": "^10.0.0",
     "dotenv": "^16.4.1",

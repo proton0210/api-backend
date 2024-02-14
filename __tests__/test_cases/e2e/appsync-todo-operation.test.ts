@@ -35,7 +35,7 @@ describe("Graphql/Appsync Todo operation", () => {
     const todos = await when.user_calls_listTodos(user);
     expect(todos.length).toEqual(2);
   });
-  it("User can list his/her todo", async () => {
+  it("User can delete his/her todo", async () => {
     const title = chance.sentence({ words: 5 });
     const todoData = {
       UserID: user.username,
@@ -53,5 +53,21 @@ describe("Graphql/Appsync Todo operation", () => {
 
     const todos = await when.user_calls_listTodos(user);
     expect(todos.length).toEqual(2);
+  });
+  it("User can update his/her todo", async () => {
+    const title = chance.sentence({ words: 5 });
+    const todoData = {
+      UserID: user.username,
+      title: title,
+    };
+    const createTodoResponse = await when.user_creates_a_todo(user, todoData); // no of todos == 3
+    const todoId = createTodoResponse.TodoID;
+    console.log("TODO ID -->", todoId);
+
+    const updateTodoTodoResponse = await when.user_calls_updateTodo(
+      user,
+      todoData.title
+    );
+    expect(updateTodoTodoResponse).toEqual(true);
   });
 });
